@@ -1,11 +1,14 @@
-import numpy as np
 import copy
+import random
 
 class GameOfLife(object):
     def __init__(self, height, width):
         self.height = height
         self.width = width
-        self.state = np.random.randint(2, size=(self.height, self.width), dtype=np.int8)
+        self.state = [[0]*self.width for i in range(self.height)]
+        for i in range(self.height):
+            for j in range(self.width):
+                self.state[i][j] = random.randint(0, 1)
 
 
     def update_state(self):
@@ -28,9 +31,9 @@ class GameOfLife(object):
                 #print(state)
                 #print(i, j, neighbor_cell_sum, c)
                 if c == 0 and neighbor_cell_sum == 3:
-                    next_state[i,j] = 1
+                    next_state[i][j] = 1
                 elif c == 1 and neighbor_cell_sum in (2,3):
-                    next_state[i,j] = 1
+                    next_state[i][j] = 1
                 else:
-                    next_state[i,j] = 0
+                    next_state[i][j] = 0
         self.state = next_state

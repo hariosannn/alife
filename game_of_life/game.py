@@ -1,4 +1,3 @@
-import numpy as np
 from game_of_life import GameOfLife
 import pyxel
 
