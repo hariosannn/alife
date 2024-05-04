@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "72ed7fdd94f1faa7e9a9d8dad15817d0dd2d33c99de3d23265fc75f4e606371c"
+            "sha256": "553cee0617dc675719c918576b247fb1244ca4c14875d814f344be33aaab4321"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -476,6 +476,20 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==2.9.0.post0"
+        },
+        "pyxel": {
+            "hashes": [
+                "sha256:001d171fd1385696223d9265dba3c3a73f14f7824eb215ca148e253e194ba3ca",
+                "sha256:2be1e6340c0fccf0c7ff6e3d921aabf2ff874984fee9a2e64cdafaa801b4ac97",
+                "sha256:42a371fcbc879ef7680e1c11c68f1235db6ac7de5f089b40a01d01ece39246a1",
+                "sha256:624beeab0c947fad9bcde13abd4f8ce0bdd01c35819b2e95e3dace5369ba0d23",
+                "sha256:683fe0141b5f5892d2858f28c9075e36c93a847d5c4a3cbe4f614ec0cbbc0567",
+                "sha256:ae7688549b88e03e4b9e9c23bf17a07ffeac462042de4b44f2a5c3729d334542",
+                "sha256:b92ef2954931482ff124bbea58262ca3b7a27ad2dea8de4d9c0ba8ce30c5f65a",
+                "sha256:fc86b64c3d305ab2761eeaf6e1c6af05f9937e4d2fec391d4f12791c03cbc2db"
+            ],
+            "index": "pypi",
+            "version": "==2.0.11"
         },
         "scipy": {
             "hashes": [
