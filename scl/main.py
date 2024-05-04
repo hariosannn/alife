@@ -3,14 +3,13 @@
 
 import sys, os
 sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
-import numpy as np
-from visualizers import scl_visualizer
+from visualizers import scl_visualizer 
 from scl_interaction_functions import *
 
 # visualizerの初期化 (Appendix参照)
 visualizer = scl_visualizer.SCLVisualizer()
 
-SPACE_SIZE = 16
+SPACE_SIZE = 32
 
 # 初期化設定に関するパラメタ
 INITIAL_SUBSTRATE_DENSITY = 0.8
@@ -25,7 +24,7 @@ INITIAL_BONDED_LINK_POSITIONS = [
 # 各分子の移動しやすさ
 MOBILITY_FACTOR = {
     'HOLE':           0.1,
-    'SUBSTRATE':      0.1,
+    'SUBSTRATE':      0.1, 
     'CATALYST':       0.0001,
     'LINK':           0.05,
     'LINK_SUBSTRATE': 0.05,}
@@ -39,7 +38,7 @@ ABSORPTION_PROBABILITY             = 0.5
 EMISSION_PROBABILITY               = 0.5
 
 # 初期化
-particles = np.empty((SPACE_SIZE, SPACE_SIZE), dtype=object)
+particles = [[None for _ in range(SPACE_SIZE)] for _ in range(SPACE_SIZE)]
 # INITIAL_SUBSTRATE_DENSITYに従って、SUBSTRATEとHOLEを配置する。
 for x in range(SPACE_SIZE):
     for y in range(SPACE_SIZE):
@@ -47,40 +46,42 @@ for x in range(SPACE_SIZE):
             p = {'type': 'SUBSTRATE', 'disintegrating_flag': False, 'bonds': []}
         else:
             p = {'type': 'HOLE', 'disintegrating_flag': False, 'bonds': []}
-        particles[x,y] = p
+        particles[x][y] = p
 # INITIAL_CATALYST_POSITIONSにCATALYSTを配置する。
 for x, y in INITIAL_CATALYST_POSITIONS:
-    particles[x, y]['type'] = 'CATALYST'
-
+    particles[x][y]['type'] = 'CATALYST'
+    
 # 膜がある状態からスタートするには、コメントアウトしてください
 # for x0, y0, x1, y1 in INITIAL_BONDED_LINK_POSITIONS:
-#     particles[x0, y0]['type'] = 'LINK'
-#     particles[x0, y0]['bonds'].append((x1, y1))
-#     particles[x1, y1]['bonds'].append((x0, y0))
+#     particles[x0][y0]['type'] = 'LINK'
+#     particles[x0][y0]['bonds'].append((x1, y1))
+#     particles[x1][y1]['bonds'].append((x0, y0))
 
 while visualizer:
     # 移動
-    moved = np.full(particles.shape, False, dtype=bool)
+    moved = [[False for _ in range(SPACE_SIZE)] for _ in range(SPACE_SIZE)]
     for x in range(SPACE_SIZE):
         for y in range(SPACE_SIZE):
-            p = particles[x,y]
+            p = particles[x][y]
             n_x, n_y = get_random_neumann_neighborhood(x, y, SPACE_SIZE)
-            n_p = particles[n_x, n_y]
-            mobility_factor = np.sqrt(MOBILITY_FACTOR[p['type']] * MOBILITY_FACTOR[n_p['type']])
-            if not moved[x, y] and not moved[n_x, n_y] and \
+            n_p = particles[n_x][n_y]
+            mobility_factor = (MOBILITY_FACTOR[p['type']] * MOBILITY_FACTOR[n_p['type']])**0.5
+            if not moved[x][y] and not moved[n_x][n_y] and \
                len(p['bonds']) == 0 and len(n_p['bonds']) == 0 and \
                evaluate_probability(mobility_factor):
-                    particles[x,y], particles[n_x,n_y] = n_p, p
-                    moved[x, y] = moved[n_x, n_y] = True
-    # 反応
+                    particles[x][y], particles[n_x][n_y] = n_p, p
+                    moved[x][y] = moved[n_x][n_y] = True
+    # 反応 
     for x in range(SPACE_SIZE):
         for y in range(SPACE_SIZE):
             production(particles, x, y, PRODUCTION_PROBABILITY)
             disintegration(particles, x, y, DISINTEGRATION_PROBABILITY)
             bonding(particles, x, y, BONDING_CHAIN_INITIATE_PROBABILITY,
                                      BONDING_CHAIN_SPLICE_PROBABILITY,
-                                     BONDING_CHAIN_EXTEND_PROBABILITY)
+                                     BONDING_CHAIN_EXTEND_PROBABILITY) 
             bond_decay(particles, x, y, BOND_DECAY_PROBABILITY)
             absorption(particles, x, y, ABSORPTION_PROBABILITY)
             emission(particles, x, y, EMISSION_PROBABILITY)
+            if len(particles[y][x]['bonds']) > 0:
+                print(particles[y][x]['bonds'])
     visualizer.update(particles)
