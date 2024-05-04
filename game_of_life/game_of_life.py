@@ -11,6 +11,15 @@ class GameOfLife(object):
                 self.state[i][j] = random.randint(0, 1)
 
 
+    def change_state(self, i, j, val):
+        self.state[i][j] = val
+
+
+    def reset_state(self):
+        for i in range(self.height):
+            for j in range(self.width):
+                self.state[i][j] = random.randint(0, 1)
+        
     def update_state(self):
         next_state = copy.deepcopy(self.state)
         for i in range(self.height):

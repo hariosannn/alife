@@ -7,12 +7,15 @@ class APP:
         self.cell_img_topleft = (0, 0)
         self.cell_img_heigt = 2
         self.cell_img_width = 2
-        pyxel.init(256, 256, title="game of life")
+        pyxel.init(256, 256, fps=8, title="game of life")
         pyxel.load('my_resource.pyxres')
         pyxel.run(self.update, self.draw)
 
     def update(self):
-        self.game_of_life.update_state()
+        if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
+            self.game_of_life.reset_state()
+        else:
+            self.game_of_life.update_state()
 
     def draw(self):
         pyxel.cls(0)
