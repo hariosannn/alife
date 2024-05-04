@@ -3,26 +3,26 @@ import pyxel
 
 class APP:
     def __init__(self):
-        self.scl = SCL(32)
+        self.state_size = 32
+        self.scl = SCL(self.state_size)
         self.catalyst_img_topleft = (0, 0)
         self.settings = {'CATALYST':{'img_topleft':(0, 0), 'height':8, 'width':8},\
                          'SUBSTRATE':{'img_topleft':(8, 0), 'height':8, 'width':8},
                          'LINK':{'img_topleft':(0, 8), 'height':8, 'width':8},
                          'LINK_SUBSTRATE':{'img_topleft':(8, 8), 'height':8, 'width':8}}
-        pyxel.init(256, 256, fps=30, title="substrate catalyst link")
+        pyxel.init(self.state_size*8, self.state_size*8, fps=15, title="substrate catalyst link")
         pyxel.load('my_resource.pyxres')
         pyxel.run(self.update, self.draw)
 
     def update(self):
         if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
-            #self.scl.reset_state()
-            pass
+            self.scl.reset()
         else:
             self.scl.update()
 
     def draw(self):
         pyxel.cls(0)
-        pyxel.bltm(0, 0, 0, 0, 0, 256, 256)
+        pyxel.bltm(0, 0, 0, 0, 0, self.state_size*8, self.state_size*8)
         for r, row in enumerate(self.scl.particles):
             for c, val in enumerate(row):
                 if val['type'] != 'HOLE':

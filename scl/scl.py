@@ -1,15 +1,9 @@
 import sys, os
 from scl_interaction_functions import *
-
+import random
 
 # 初期化設定に関するパラメタ
 INITIAL_SUBSTRATE_DENSITY = 0.8
-INITIAL_CATALYST_POSITIONS = [(8,8)]
-INITIAL_BONDED_LINK_POSITIONS = [
-    (5,6,6,5),    (6,5,7,5),   (7,5,8,5),  (8,5,9,5),  (9,5,10,5),
-    (10,5,11,6),  (11,6,11,7), (11,7,11,8),(11,8,11,9),(11,9,11,10),
-    (11,10,10,11),(10,11,9,11),(9,11,8,11),(8,11,7,11),(7,11,6,11),
-    (6,11,5,10),  (5,10,5,9),  (5,9,5,8),  (5,8,5,7),  (5,7,5,6)]
 
 # モデルのパラメタ
 # 各分子の移動しやすさ
@@ -31,6 +25,7 @@ EMISSION_PROBABILITY               = 0.5
 class SCL:
     def __init__(self, space_size):
         self.space_size = space_size
+        INITIAL_CATALYST_POSITIONS = [(random.randint(0, self.space_size), random.randint(0, self.space_size)) for _ in range(random.randint(1, 3))]
         self.particles = [[None for _ in range(self.space_size)] for _ in range(self.space_size)]
         # INITIAL_SUBSTRATE_DENSITYに従って、SUBSTRATEとHOLEを配置する。
         for x in range(self.space_size):
@@ -75,3 +70,18 @@ class SCL:
                 bond_decay(self.particles, x, y, BOND_DECAY_PROBABILITY)
                 absorption(self.particles, x, y, ABSORPTION_PROBABILITY)
                 emission(self.particles, x, y, EMISSION_PROBABILITY)
+                
+    def reset(self):
+        INITIAL_CATALYST_POSITIONS = [(random.randint(0, self.space_size-1), random.randint(0, self.space_size-1)) for _ in range(random.randint(1, 3))]
+        self.particles = [[None for _ in range(self.space_size)] for _ in range(self.space_size)]
+        # INITIAL_SUBSTRATE_DENSITYに従って、SUBSTRATEとHOLEを配置する。
+        for x in range(self.space_size):
+            for y in range(self.space_size):
+                if evaluate_probability(INITIAL_SUBSTRATE_DENSITY):
+                    p = {'type': 'SUBSTRATE', 'disintegrating_flag': False, 'bonds': []}
+                else:
+                    p = {'type': 'HOLE', 'disintegrating_flag': False, 'bonds': []}
+                self.particles[x][y] = p
+        # INITIAL_CATALYST_POSITIONSにCATALYSTを配置する。
+        for x, y in INITIAL_CATALYST_POSITIONS:
+            self.particles[x][y]['type'] = 'CATALYST'
